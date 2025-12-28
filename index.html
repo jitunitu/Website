@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💰 Earning App - Dashboard</title>
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <style>
+        /* Same CSS as before + loading spinner */
+        .loading{display:flex;align-items:center;justify-content:center;padding:50px;}
+        .spinner{width:40px;height:40px;border:4px solid #f3f3f3;border-top:4px solid var(--primary);border-radius:50%;animation:spin 1s linear infinite;}
+        @keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
+        /* Rest of CSS remains same */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="loading" class="loading" style="display:none;">
+            <div class="spinner"></div> <span>डेटा लोड हो रहा है...</span>
+        </div>
+        
+        <!-- Same HTML structure but with data-id attributes -->
+        <div class="header" id="dashboardHeader" style="display:none;">
+            <h1>💰 मेरा Earning Dashboard</h1>
+            <div class="plan-status free" id="planStatus">FREE Plan</div>
+            <div class="balance">
+                <i class="uil uil-rupee-sign"></i>
+                <span id="totalBalance">₹ 0</span>
+            </div>
+        </div>
+        
+        <!-- Joining Section with PHP endpoints -->
+        <div class="joining-section" id="joiningSection" style="display:none;">
+            <div class="joining-card free">
+                <h3>🎉 Joining Free</h3>
+                <div class="joining-price">₹ 0</div>
+                <button class="joining-btn" onclick="joinFree()" id="freeBtn">Join Free</button>
+            </div>
+            <div class="joining-card premium">
+                <h3>⭐ Premium Plan</h3>
+                <div class="joining-price">₹ 1,000</div>
+                <button class="joining-btn" onclick="buyPremium()" id="premiumBtn">Buy Now</button>
+            </div>
+        </div>
+        
+        <!-- Rest of HTML same -->
+    </div>
+
+    <script>
+        let userPhone = prompt('📱 अपना Mobile Number डालें:');
+        let userData = null;
+        let totalEarnings = 0;
+        
+        // Load user data from database
+        async function loadUserData(){
+            document.getElementById('loading').style.display = 'flex';
+            try {
+                const response = await fetch(`api.php?action=get_user&phone=${userPhone}`);
+                userData = await response.json();
+                
+                if(userData) {
+                    totalEarnings = userData.total_earnings || 0;
+                    document.getElementById('totalBalance').textContent = `₹ ${totalEarnings.toLocaleString()}`;
+                    document.getElementById('planStatus').textContent = userData.plan_type.toUpperCase() + ' Plan';
+                    if(userData.is_premium) {
+                        document.getElementById('planStatus').className = 'plan-status';
+                    }
+                    document.getElementById('freeBtn').textContent = 'Joined ✅';
+                    document.getElementById('freeBtn').disabled = true;
+                }
+            } catch(e) {
+                console.error('Database error:', e);
+            }
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('dashboardHeader').style.display = 'block';
+            document.getElementById('joiningSection').style.display = 'grid';
+        }
+        
+        async function saveEarnings(){
+            try {
+                await fetch('api.php?action=update_earnings', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({earnings: totalEarnings, phone: userPhone})
+                });
+            } catch(e) {
+                console.error('Save error:', e);
+            }
+        }
+        
+        async function completeTask(element){
+            const checkbox = element.querySelector('.task-checkbox');
+            if(checkbox.textContent === '⭕'){
+                checkbox.textContent = '✅';
+                element.classList.add('completed');
+                const amount = parseInt(element.querySelector('.task-earning').textContent.replace('₹ ',''));
+                const multiplier = userData?.multiplier || 1;
+                const finalAmount = amount * multiplier;
+                
+                totalEarnings += finalAmount;
+                updateBalance();
+                
+                // Save to database
+                await fetch('api.php?action=complete_task', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        user_id: userData.id,
+                        task: element.querySelector('.task-text').textContent,
+                        amount: finalAmount
+                    })
+                });
+                
+                await saveEarnings();
+            }
+        }
+        
+        async function joinFree(){
+            totalEarnings += 50;
+            updateBalance();
+            document.getElementById('freeBtn').innerHTML = 'Joined ✅';
+            document.getElementById('freeBtn').disabled = true;
+            await saveEarnings();
+            alert('🎉 ₹50 Free Bonus मिल गया!');
+        }
+        
+        async function buyPremium(){
+            if(confirm('⭐ ₹1000 Premium Plan खरीदें? Double Earnings मिलेंगी!')){
+                // Simulate payment
+                await new Promise(r => setTimeout(r, 2000));
+                
+                // Update database
+                await fetch('api.php?action=buy_premium', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: `phone=${userPhone}`
+                });
+                
+                location.reload(); // Refresh to show premium status
+            }
+        }
+        
+        // Initialize app
+        loadUserData();
+        
+        // Rest of functions same as before
+        function updateBalance(){
+            document.getElementById('totalBalance').textContent = `₹ ${totalEarnings.toLocaleString()}`;
+        }
+    </script>
+</body>
+</html>
