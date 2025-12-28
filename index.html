@@ -6,78 +6,246 @@
     <title>💰 Earning App - Dashboard</title>
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
     <style>
-        /* Same CSS as before + loading spinner */
-        .loading{display:flex;align-items:center;justify-content:center;padding:50px;}
-        .spinner{width:40px;height:40px;border:4px solid #f3f3f3;border-top:4px solid var(--primary);border-radius:50%;animation:spin 1s linear infinite;}
-        @keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
-        /* Rest of CSS remains same */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+        :root{--primary:#00C851;--dark:#1a1a1a;--card:#fff;--text:#333;--success:#00C851;--premium:#FF6B35;}
+        body{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;padding:20px;}
+        
+        .container{max-width:1200px;margin:0 auto;}
+        .header{padding:20px;background:var(--card);border-radius:20px;box-shadow:0 20px 40px rgba(0,0,0,0.1);margin-bottom:30px;text-align:center;position:relative;}
+        .header h1{font-size:2.5em;color:var(--dark);margin-bottom:10px;}
+        .plan-status{position:absolute;top:20px;right:20px;padding:8px 15px;background:var(--premium);color:white;border-radius:25px;font-size:0.9em;font-weight:600;}
+        .plan-status.free{background:#28a745 !important;}
+        .balance{display:inline-flex;align-items:center;background:var(--primary);color:white;padding:15px 30px;border-radius:50px;font-size:1.8em;font-weight:700;box-shadow:0 10px 30px rgba(0,200,81,0.3);}
+        .balance i{font-size:2.5em;margin-right:15px;}
+        
+        .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;margin-bottom:30px;}
+        .stat-card{background:var(--card);padding:25px;border-radius:20px;box-shadow:0 15px 35px rgba(0,0,0,0.1);text-align:center;transition:0.3s;}
+        .stat-card:hover{transform:translateY(-10px);}
+        .stat-icon{font-size:3em;background:var(--primary);color:white;width:80px;height:80px;border-radius:50%;margin:0 auto 15px;display:flex;align-items:center;justify-content:center;}
+        .stat-number{font-size:2.5em;font-weight:700;color:var(--primary);margin-bottom:5px;}
+        .stat-label{font-size:1.1em;color:var(--text);font-weight:500;}
+        
+        /* Joining Section */
+        .joining-section{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:30px;}
+        .joining-card{background:var(--card);padding:30px;border-radius:20px;box-shadow:0 15px 35px rgba(0,0,0,0.1);text-align:center;}
+        .joining-card.free{background:linear-gradient(135deg,#28a745,#20c997);}
+        .joining-card.premium{background:linear-gradient(135deg,var(--premium),#ff8e53);}
+        .joining-card h3{font-size:1.5em;color:white;margin-bottom:15px;}
+        .joining-price{font-size:3em;font-weight:700;color:white;margin-bottom:20px;}
+        .joining-btn{background:white;color:#333;border:none;padding:15px 30px;border-radius:30px;font-weight:600;font-size:1.1em;cursor:pointer;transition:0.3s;width:100%;}
+        .joining-btn:hover{transform:translateY(-3px);box-shadow:0 10px 25px rgba(0,0,0,0.2);}
+        .joining-btn.active{background:var(--premium);color:white;}
+        .joining-btn:disabled{background:#ccc;color:#666;cursor:not-allowed;transform:none;}
+        
+        .task-section{background:var(--card);border-radius:20px;padding:30px;box-shadow:0 15px 35px rgba(0,0,0,0.1);margin-bottom:30px;}
+        .section-title{display:flex;align-items:center;font-size:1.8em;font-weight:600;color:var(--dark);margin-bottom:25px;}
+        .section-title i{margin-right:15px;color:var(--primary);}
+        .tasks-list{display:flex;flex-direction:column;gap:15px;}
+        .task-item{display:flex;align-items:center;padding:20px;background:#f8f9fa;border-radius:15px;transition:0.3s;cursor:pointer;}
+        .task-item:hover{background:#e9ecef;}
+        .task-item.completed .task-checkbox{background:var(--success);}
+        .task-checkbox{width:25px;height:25px;border:3px solid #ddd;border-radius:50%;margin-right:20px;display:flex;align-items:center;justify-content:center;font-size:1.2em;transition:0.3s;}
+        .task-text{font-weight:500;}
+        .task-earning{font-weight:600;color:var(--primary);margin-left:auto;}
+        
+        .referral-section{display:grid;grid-template-columns:1fr 1fr;gap:30px;}
+        .referral-card{background:var(--card);padding:30px;border-radius:20px;box-shadow:0 15px 35px rgba(0,0,0,0.1);text-align:center;}
+        .referral-code{background:var(--primary);color:white;padding:20px;border-radius:15px;font-size:1.5em;font-weight:700;font-family:monospace;letter-spacing:3px;margin:20px 0;}
+        .copy-btn{background:#fff;color:var(--primary);border:none;padding:12px 25px;border-radius:25px;font-weight:600;cursor:pointer;transition:0.3s;}
+        .copy-btn:hover{transform:scale(1.05);}
+        
+        .withdrawals{background:var(--card);padding:30px;border-radius:20px;box-shadow:0 15px 35px rgba(0,0,0,0.1);}
+        .withdrawal-list{display:flex;flex-direction:column;gap:15px;max-height:300px;overflow-y:auto;}
+        .withdrawal-item{display:flex;justify-content:space-between;align-items:center;padding:15px;background:#f8f9fa;border-radius:10px;}
+        
+        @media(max-width:768px){
+            .joining-section,.referral-section{grid-template-columns:1fr;}
+            .stats-grid{grid-template-columns:repeat(2,1fr);}
+            .header h1{font-size:2em;}
+            .plan-status{top:10px;right:10px;font-size:0.8em;}
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <div id="loading" class="loading" style="display:none;">
-            <div class="spinner"></div> <span>डेटा लोड हो रहा है...</span>
-        </div>
-        
-        <!-- Same HTML structure but with data-id attributes -->
-        <div class="header" id="dashboardHeader" style="display:none;">
+        <!-- Header with Plan Status -->
+        <div class="header">
             <h1>💰 मेरा Earning Dashboard</h1>
-            <div class="plan-status free" id="planStatus">FREE Plan</div>
+            <div class="plan-status free" id="planStatus">FREE Plan Active</div>
             <div class="balance">
                 <i class="uil uil-rupee-sign"></i>
-                <span id="totalBalance">₹ 0</span>
+                <span id="totalBalance">₹ 50</span>
             </div>
         </div>
         
-        <!-- Joining Section with PHP endpoints -->
-        <div class="joining-section" id="joiningSection" style="display:none;">
+        <!-- Joining Plans Section -->
+        <div class="joining-section">
             <div class="joining-card free">
                 <h3>🎉 Joining Free</h3>
                 <div class="joining-price">₹ 0</div>
-                <button class="joining-btn" onclick="joinFree()" id="freeBtn">Join Free</button>
+                <p style="color:white;margin-bottom:20px;">Join करके तुरंत ₹50 बोनस पाएं</p>
+                <button class="joining-btn active" onclick="joinFree()" id="freeBtn">Joined ✅</button>
             </div>
             <div class="joining-card premium">
                 <h3>⭐ Premium Plan</h3>
                 <div class="joining-price">₹ 1,000</div>
+                <p style="color:white;margin-bottom:20px;">Double Earnings + Extra Benefits</p>
                 <button class="joining-btn" onclick="buyPremium()" id="premiumBtn">Buy Now</button>
             </div>
         </div>
         
-        <!-- Rest of HTML same -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="uil uil-chart-line"></i></div>
+                <div class="stat-number" id="todayEarning">₹ 245</div>
+                <div class="stat-label">आज की कमाई</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="uil uil-calendar-alt"></i></div>
+                <div class="stat-number" id="weekEarning">₹ 1,890</div>
+                <div class="stat-label">इस सप्ताह</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="uil uil-wallet"></i></div>
+                <div class="stat-number" id="monthEarning">₹ 5,247</div>
+                <div class="stat-label">इस महीने</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="uil uil-users-alt"></i></div>
+                <div class="stat-number" id="referrals">12</div>
+                <div class="stat-label">रेफरल्स</div>
+            </div>
+        </div>
+        
+        <!-- Rest remains same -->
+        <div class="task-section">
+            <div class="section-title">
+                <i class="uil uil-task"></i>
+                आज के टास्क पूरे करें (Premium: 2x Earnings)
+            </div>
+            <div class="tasks-list">
+                <div class="task-item" onclick="completeTask(this)">
+                    <div class="task-checkbox">⭕</div>
+                    <span class="task-text">Daily Check-in</span>
+                    <span class="task-earning">₹ 10</span>
+                </div>
+                <div class="task-item" onclick="completeTask(this)">
+                    <div class="task-checkbox">⭕</div>
+                    <span class="task-text">Watch 2 Ads</span>
+                    <span class="task-earning">₹ 25</span>
+                </div>
+                <div class="task-item" onclick="completeTask(this)">
+                    <div class="task-checkbox">⭕</div>
+                    <span class="task-text">Share App</span>
+                    <span class="task-earning">₹ 50</span>
+                </div>
+                <div class="task-item completed">
+                    <div class="task-checkbox">✅</div>
+                    <span class="task-text">Spin Wheel</span>
+                    <span class="task-earning">₹ 100</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="referral-section">
+            <div class="referral-card">
+                <h3>👥 Referral Code शेयर करें</h3>
+                <div class="referral-code" id="referralCode">SHRTI2025</div>
+                <button class="copy-btn" onclick="copyReferral()">Copy Code</button>
+                <p style="margin-top:15px;color:var(--text);">हर Referral पर ₹100 बोनस</p>
+            </div>
+            <div class="referral-card">
+                <h3>💸 Withdraw करें</h3>
+                <div style="font-size:1.5em;font-weight:700;color:var(--primary);margin:20px 0;">Minimum: ₹500</div>
+                <select style="width:100%;padding:12px;border-radius:10px;border:2px solid #ddd;margin-bottom:15px;">
+                    <option>UPI</option>
+                    <option>Bank</option>
+                    <option>Paytm</option>
+                </select>
+                <button class="copy-btn" style="width:100%;background:var(--primary);color:white;">Withdraw Now</button>
+            </div>
+        </div>
     </div>
 
     <script>
-        let userPhone = prompt('📱 अपना Mobile Number डालें:');
-        let userData = null;
-        let totalEarnings = 0;
+        let totalEarnings = 50; // Free joining bonus
+        let isPremium = false;
+        let multiplier = 1; // 1x for free, 2x for premium
         
-        // Load user data from database
-        async function loadUserData(){
-            document.getElementById('loading').style.display = 'flex';
-            try {
-                const response = await fetch(`api.php?action=get_user&phone=${userPhone}`);
-                userData = await response.json();
-                
-                if(userData) {
-                    totalEarnings = userData.total_earnings || 0;
-                    document.getElementById('totalBalance').textContent = `₹ ${totalEarnings.toLocaleString()}`;
-                    document.getElementById('planStatus').textContent = userData.plan_type.toUpperCase() + ' Plan';
-                    if(userData.is_premium) {
-                        document.getElementById('planStatus').className = 'plan-status';
-                    }
-                    document.getElementById('freeBtn').textContent = 'Joined ✅';
-                    document.getElementById('freeBtn').disabled = true;
-                }
-            } catch(e) {
-                console.error('Database error:', e);
+        function joinFree(){
+            if(!document.getElementById('freeBtn').classList.contains('active')){
+                totalEarnings += 50;
+                document.getElementById('freeBtn').textContent = 'Joined ✅';
+                document.getElementById('freeBtn').classList.add('active');
+                document.getElementById('freeBtn').disabled = true;
+                updateBalance();
+                alert('🎉 Free Joining Bonus ₹50 मिल गया!');
             }
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('dashboardHeader').style.display = 'block';
-            document.getElementById('joiningSection').style.display = 'grid';
         }
         
-        async function saveEarnings(){
-            try {
+        function buyPremium(){
+            if(confirm('⭐ Premium Plan ₹1000 खरीदना चाहते हैं?
+
+Double Earnings + Extra Benefits मिलेंगे!')){
+                isPremium = true;
+                multiplier = 2;
+                document.getElementById('premiumBtn').textContent = 'Activated ✅';
+                document.getElementById('premiumBtn').classList.add('active');
+                document.getElementById('premiumBtn').disabled = true;
+                document.getElementById('planStatus').textContent = 'PREMIUM Active';
+                document.getElementById('planStatus').className = 'plan-status';
+                totalEarnings += 100; // Premium joining bonus
+                updateBalance();
+                alert('🚀 Premium Plan Active! अब 2x Earnings मिलेंगी!');
+            }
+        }
+        
+        function completeTask(element){
+            const checkbox = element.querySelector('.task-checkbox');
+            if(checkbox.textContent === '⭕'){
+                checkbox.textContent = '✅';
+                element.classList.add('completed');
+                const earningText = element.querySelector('.task-earning').textContent;
+                let amount = parseInt(earningText.replace('₹ ',''));
+                amount *= multiplier; // Apply plan multiplier
+                totalEarnings += amount;
+                updateBalance();
+                let today = parseInt(document.getElementById('todayEarning').textContent.replace('₹ ',''));
+                updateTodayEarning(today + amount);
+            }
+        }
+        
+        function updateBalance(){
+            document.getElementById('totalBalance').textContent = `₹ ${totalEarnings.toLocaleString()}`;
+        }
+        
+        function updateTodayEarning(amount){
+            document.getElementById('todayEarning').textContent = `₹ ${amount}`;
+        }
+        
+        function copyReferral(){
+            const code = document.getElementById('referralCode').textContent;
+            navigator.clipboard.writeText(code).then(()=>{
+                alert('✅ Referral Code कॉपी हो गया!');
+            });
+        }
+        
+        // Auto animate balance counter
+        let currentBalance = 0;
+        const targetBalance = 50;
+        const increment = targetBalance / 100;
+        const balanceTimer = setInterval(()=>{
+            currentBalance += increment;
+            if(currentBalance >= targetBalance){
+                currentBalance = targetBalance;
+                clearInterval(balanceTimer);
+            }
+            document.getElementById('totalBalance').textContent = `₹ ${Math.floor(currentBalance).toLocaleString()}`;
+        }, 30);
+    </script>
+</body>
+</html>            try {
                 await fetch('api.php?action=update_earnings', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
