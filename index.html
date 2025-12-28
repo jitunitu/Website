@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>💰 Dubai Earning App - Dashboard</title>
+    <title>💰 Smart Earning App - Auto Currency</title>
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
         *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
-        :root{--primary:#00C851;--dark:#1a1a1a;--card:#fff;--text:#333;--success:#00C851;--premium:#FF6B35;--dubai-gold:#FFD700;}
+        :root{--primary:#00C851;--dark:#1a1a1a;--card:#fff;--text:#333;--success:#00C851;--premium:#FF6B35;--gold:#FFD700;}
         body{background:linear-gradient(135deg,#1e3c72,#2a5298);min-height:100vh;padding:20px;}
         
         .container{max-width:1200px;margin:0 auto;}
         .header{padding:30px;background:var(--card);border-radius:25px;box-shadow:0 25px 50px rgba(0,0,0,0.15);margin-bottom:30px;text-align:center;position:relative;overflow:hidden;}
-        .header::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--dubai-gold),var(--premium));}
+        .header::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--gold),var(--premium));}
         .header h1{font-size:2.8em;color:var(--dark);margin-bottom:15px;text-shadow:2px 2px 4px rgba(0,0,0,0.1);}
+        .country-info{position:absolute;top:25px;left:25px;padding:10px 20px;background:var(--primary);color:white;border-radius:30px;font-size:1em;font-weight:600;box-shadow:0 5px 15px rgba(0,200,81,0.4);}
         .plan-status{position:absolute;top:25px;right:25px;padding:10px 20px;background:var(--premium);color:white;border-radius:30px;font-size:1em;font-weight:600;box-shadow:0 5px 15px rgba(255,107,53,0.4);}
         .plan-status.free{background:#28a745 !important;box-shadow:0 5px 15px rgba(40,167,69,0.4);}
         .balance{display:inline-flex;align-items:center;background:linear-gradient(135deg,var(--primary),#00a85a);color:white;padding:20px 40px;border-radius:50px;font-size:2em;font-weight:700;box-shadow:0 15px 40px rgba(0,200,81,0.4);position:relative;overflow:hidden;}
@@ -31,14 +32,14 @@
         
         .joining-section{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:25px;margin-bottom:40px;}
         .joining-card{padding:40px;border-radius:25px;box-shadow:0 25px 50px rgba(0,0,0,0.15);text-align:center;position:relative;overflow:hidden;}
-        .joining-card::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:var(--dubai-gold);}
+        .joining-card::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:var(--gold);}
         .joining-card.free{background:linear-gradient(135deg,#28a745,#20c997);}
         .joining-card.premium{background:linear-gradient(135deg,var(--premium),#ff8e53);}
         .joining-card h3{font-size:1.8em;color:white;margin-bottom:20px;font-weight:700;text-shadow:2px 2px 4px rgba(0,0,0,0.3);}
-        .joining-price{font-size:3.5em;font-weight:900;color:var(--dubai-gold);margin-bottom:25px;text-shadow:3px 3px 6px rgba(0,0,0,0.4);}
+        .joining-price{font-size:3.5em;font-weight:900;color:var(--gold);margin-bottom:25px;text-shadow:3px 3px 6px rgba(0,0,0,0.4);}
         .joining-btn{background:white;color:#333;border:none;padding:20px 40px;border-radius:50px;font-weight:700;font-size:1.2em;cursor:pointer;transition:all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);width:100%;box-shadow:0 10px 30px rgba(0,0,0,0.2);}
         .joining-btn:hover{transform:translateY(-8px) scale(1.05);box-shadow:0 20px 50px rgba(0,0,0,0.3);}
-        .joining-btn.active,.joining-btn:disabled{background:var(--dubai-gold);color:#1a1a1a;font-weight:800;transform:none;box-shadow:0 10px 30px rgba(255,215,0,0.4);cursor:not-allowed;}
+        .joining-btn.active,.joining-btn:disabled{background:var(--gold);color:#1a1a1a;font-weight:800;transform:none;box-shadow:0 10px 30px rgba(255,215,0,0.4);cursor:not-allowed;}
         
         .task-section{background:var(--card);border-radius:25px;padding:40px;box-shadow:0 25px 50px rgba(0,0,0,0.15);margin-bottom:30px;}
         .section-title{display:flex;align-items:center;font-size:2em;font-weight:700;color:var(--dark);margin-bottom:30px;}
@@ -57,7 +58,7 @@
             .joining-section{grid-template-columns:1fr;}
             .stats-grid{grid-template-columns:repeat(2,1fr);gap:15px;}
             .header h1{font-size:2.2em;}
-            .plan-status{top:15px;right:15px;font-size:0.9em;padding:8px 15px;}
+            .country-info,.plan-status{top:15px;font-size:0.9em;padding:8px 15px;left:15px;right:15px;}
             .balance{font-size:1.6em;padding:15px 25px;}
         }
     </style>
@@ -65,25 +66,26 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>💰 Dubai Earning Dashboard</h1>
+            <h1>💰 Smart Earning Dashboard</h1>
+            <div class="country-info" id="countryInfo">Detecting...</div>
             <div class="plan-status free" id="planStatus">FREE Plan Active</div>
             <div class="balance">
                 <i class="uil uil-chart-line"></i>
-                <span id="totalBalance">د.إ 50</span>
+                <span id="totalBalance">$50</span>
             </div>
         </div>
         
         <div class="joining-section">
             <div class="joining-card free">
                 <h3>🎉 Free Joining</h3>
-                <div class="joining-price">د.إ 0</div>
-                <p style="color:white;margin-bottom:25px;font-size:1.1em;">Join करके तुरंत د.إ50 बोनस पाएं</p>
+                <div class="joining-price" id="freePrice">$0</div>
+                <p style="color:white;margin-bottom:25px;font-size:1.1em;" id="freeBonusText">Join करके तुरंत $50 बोनस पाएं</p>
                 <button class="joining-btn active" onclick="joinFree()" id="freeBtn">Joined ✅</button>
             </div>
             <div class="joining-card premium">
                 <h3>⭐ Premium Plan</h3>
-                <div class="joining-price">د.إ 1,000</div>
-                <p style="color:white;margin-bottom:25px;font-size:1.1em;">Double Earnings + VIP Benefits</p>
+                <div class="joining-price" id="premiumPrice">$1,000</div>
+                <p style="color:white;margin-bottom:25px;font-size:1.1em;" id="premiumText">Double Earnings + VIP Benefits</p>
                 <button class="joining-btn" onclick="buyPremium()" id="premiumBtn">Buy Premium</button>
             </div>
         </div>
@@ -91,17 +93,17 @@
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-icon"><i class="uil uil-chart-line"></i></div>
-                <div class="stat-number" id="todayEarning">د.إ 245</div>
+                <div class="stat-number" id="todayEarning">$245</div>
                 <div class="stat-label">Today Earnings</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon"><i class="uil uil-calendar-alt"></i></div>
-                <div class="stat-number" id="weekEarning">د.إ 1,890</div>
+                <div class="stat-number" id="weekEarning">$1,890</div>
                 <div class="stat-label">This Week</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon"><i class="uil uil-wallet"></i></div>
-                <div class="stat-number" id="monthEarning">د.إ 5,247</div>
+                <div class="stat-number" id="monthEarning">$5,247</div>
                 <div class="stat-label">This Month</div>
             </div>
             <div class="stat-card">
@@ -114,56 +116,111 @@
         <div class="task-section">
             <div class="section-title">
                 <i class="uil uil-task"></i>
-                Complete Daily Tasks (Premium: 2x Earnings)
+                <span id="taskTitle">Complete Daily Tasks (Premium: 2x Earnings)</span>
             </div>
             <div class="tasks-list">
-                <div class="task-item" onclick="completeTask(this)">
+                <div class="task-item" onclick="completeTask(this)" data-amount="10">
                     <div class="task-checkbox">⭕</div>
                     <span class="task-text">Daily Check-in</span>
-                    <span class="task-earning">د.إ 10</span>
+                    <span class="task-earning" id="task1">$10</span>
                 </div>
-                <div class="task-item" onclick="completeTask(this)">
+                <div class="task-item" onclick="completeTask(this)" data-amount="25">
                     <div class="task-checkbox">⭕</div>
                     <span class="task-text">Watch 2 Ads</span>
-                    <span class="task-earning">د.إ 25</span>
+                    <span class="task-earning" id="task2">$25</span>
                 </div>
-                <div class="task-item" onclick="completeTask(this)">
+                <div class="task-item" onclick="completeTask(this)" data-amount="50">
                     <div class="task-checkbox">⭕</div>
                     <span class="task-text">Share App</span>
-                    <span class="task-earning">د.إ 50</span>
+                    <span class="task-earning" id="task3">$50</span>
                 </div>
-                <div class="task-item" onclick="completeTask(this)">
+                <div class="task-item" onclick="completeTask(this)" data-amount="100">
                     <div class="task-checkbox">⭕</div>
                     <span class="task-text">Invite Friend</span>
-                    <span class="task-earning">د.إ 100</span>
+                    <span class="task-earning" id="task4">$100</span>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Load data from localStorage
-        let appData = JSON.parse(localStorage.getItem('dubaiEarningApp')) || {
+        // ================= AUTO CURRENCY DETECTION =================
+        const countryToCurrency = {
+            "IN": "INR", "PK": "PKR", "AE": "AED", "US": "USD", 
+            "GB": "GBP", "SA": "SAR", "BD": "BDT", "NP": "NPR",
+            "AU": "AUD", "CA": "CAD", "DE": "EUR", "FR": "EUR"
+        };
+
+        const userLocale = navigator.language || navigator.userLanguage || "en-IN";
+        const localeParts = userLocale.split("-");
+        const countryCode = localeParts[1] || "IN";
+        const currencyCode = countryToCurrency[countryCode] || "INR";
+        
+        // Currency formatter
+        const currencyFormatter = new Intl.NumberFormat(userLocale, {
+            style: 'currency',
+            currency: currencyCode,
+            minimumFractionDigits: 0
+        });
+
+        // Hindi text mapping
+        const hindiTexts = {
+            "IN": {free: "Join करके तुरंत", premium: "Double Earnings + VIP Benefits"},
+            "PK": {free: "Join کرکے فوری", premium: "Double آمدنی + VIP فوائد"},
+            "AE": {free: "انضم واطلب مكافأة", premium: "أرباح مزدوجة + مزايا VIP"},
+            "default": {free: "Join to get instant", premium: "Double Earnings + VIP Benefits"}
+        };
+
+        const textConfig = hindiTexts[countryCode] || hindiTexts["default"];
+
+        // ================= APP DATA =================
+        let appData = JSON.parse(localStorage.getItem('smartEarningApp')) || {
             totalEarnings: 50,
             isPremium: false,
             multiplier: 1,
             freeJoined: true,
             tasksCompleted: [],
-            todayEarning: 245
+            todayEarning: 245,
+            weekEarning: 1890,
+            monthEarning: 5247
         };
 
-        // Update global variables
         let totalEarnings = appData.totalEarnings;
         let isPremium = appData.isPremium;
         let multiplier = appData.multiplier;
         let todayEarning = appData.todayEarning;
+        let weekEarning = appData.weekEarning;
+        let monthEarning = appData.monthEarning;
 
-        // Initialize UI
-        function initUI() {
-            document.getElementById('totalBalance').textContent = `د.إ ${totalEarnings.toLocaleString()}`;
-            document.getElementById('todayEarning').textContent = `د.إ ${todayEarning.toLocaleString()}`;
+        // ================= INIT FUNCTIONS =================
+        function initCurrency() {
+            // Update all currency displays
+            document.getElementById('totalBalance').textContent = currencyFormatter.format(totalEarnings);
+            document.getElementById('todayEarning').textContent = currencyFormatter.format(todayEarning);
+            document.getElementById('weekEarning').textContent = currencyFormatter.format(weekEarning);
+            document.getElementById('monthEarning').textContent = currencyFormatter.format(monthEarning);
             
-            const planStatus = document.getElementById('planStatus');
+            // Update task amounts
+            document.querySelectorAll('.task-item').forEach(item => {
+                const amount = item.dataset.amount;
+                const earningEl = item.querySelector('.task-earning');
+                earningEl.textContent = currencyFormatter.format(amount);
+            });
+
+            // Update prices
+            document.getElementById('freePrice').textContent = currencyFormatter.format(0);
+            document.getElementById('premiumPrice').textContent = currencyFormatter.format(1000);
+            
+            // Update texts
+            document.getElementById('freeBonusText').textContent = `Join करके तुरंत ${currencyFormatter.format(50)} बोनस पाएं`;
+            document.getElementById('premiumText').textContent = textConfig.premium;
+            document.getElementById('taskTitle').textContent = `Complete Daily Tasks (Premium: 2x Earnings)`;
+            
+            // Show country info
+            document.getElementById('countryInfo').textContent = `${countryCode} (${currencyCode})`;
+        }
+
+        function initUI() {
             if (appData.freeJoined) {
                 document.getElementById('freeBtn').textContent = 'Joined ✅';
                 document.getElementById('freeBtn').classList.add('active');
@@ -174,41 +231,46 @@
                 document.getElementById('premiumBtn').textContent = 'Premium Active ✅';
                 document.getElementById('premiumBtn').classList.add('active');
                 document.getElementById('premiumBtn').disabled = true;
-                planStatus.textContent = 'PREMIUM Active';
-                planStatus.className = 'plan-status';
+                document.getElementById('planStatus').textContent = 'PREMIUM Active';
+                document.getElementById('planStatus').className = 'plan-status';
             }
         }
 
         function saveData() {
-            localStorage.setItem('dubaiEarningApp', JSON.stringify(appData));
+            appData.totalEarnings = totalEarnings;
+            appData.todayEarning = todayEarning;
+            appData.weekEarning = weekEarning;
+            appData.monthEarning = monthEarning;
+            appData.isPremium = isPremium;
+            appData.multiplier = multiplier;
+            localStorage.setItem('smartEarningApp', JSON.stringify(appData));
         }
 
+        // ================= APP FUNCTIONS =================
         function joinFree() {
             if (!appData.freeJoined) {
                 totalEarnings += 50;
                 appData.freeJoined = true;
-                appData.totalEarnings = totalEarnings;
                 document.getElementById('freeBtn').innerHTML = 'Joined ✅';
                 document.getElementById('freeBtn').classList.add('active');
                 document.getElementById('freeBtn').disabled = true;
                 updateBalance();
                 saveData();
-                alert('🎉 Free Joining Bonus د.إ50 Received!');
+                alert(`🎉 Free Joining Bonus ${currencyFormatter.format(50)} Received!`);
             }
         }
 
         function buyPremium() {
-            if (confirm('⭐ Buy Premium Plan د.إ1000?
+            if (confirm(`⭐ Buy Premium Plan ${currencyFormatter.format(1000)}?
 
 ✅ Double Earnings
 ✅ VIP Benefits
-✅ Priority Support')) {
+✅ Priority Support`)) {
                 isPremium = true;
                 multiplier = 2;
                 appData.isPremium = true;
                 appData.multiplier = 2;
                 totalEarnings += 100;
-                appData.totalEarnings = totalEarnings;
                 
                 document.getElementById('premiumBtn').innerHTML = 'Premium Active ✅';
                 document.getElementById('premiumBtn').classList.add('active');
@@ -228,15 +290,12 @@
                 checkbox.textContent = '✅';
                 element.classList.add('completed');
                 
-                const earningText = element.querySelector('.task-earning').textContent;
-                let baseAmount = parseInt(earningText.replace('د.إ ', '').replace(',', ''));
+                const baseAmount = parseInt(element.dataset.amount);
                 const finalAmount = Math.round(baseAmount * multiplier);
                 
                 totalEarnings += finalAmount;
                 todayEarning += finalAmount;
                 
-                appData.totalEarnings = totalEarnings;
-                appData.todayEarning = todayEarning;
                 appData.tasksCompleted.push({
                     task: element.querySelector('.task-text').textContent,
                     amount: finalAmount,
@@ -250,44 +309,20 @@
         }
 
         function updateBalance() {
-            document.getElementById('totalBalance').textContent = `د.إ ${totalEarnings.toLocaleString()}`;
+            document.getElementById('totalBalance').textContent = currencyFormatter.format(totalEarnings);
         }
 
         function updateTodayEarning() {
-            document.getElementById('todayEarning').textContent = `د.إ ${todayEarning.toLocaleString()}`;
+            document.getElementById('todayEarning').textContent = currencyFormatter.format(todayEarning);
         }
 
-        function copyReferral() {
-            const code = 'DUBAI2025';
-            navigator.clipboard.writeText(code).then(() => {
-                alert('✅ Referral Code Copied: ' + code);
-            }).catch(() => {
-                prompt('Copy this code:', code);
-            });
-        }
+        // ================= INIT APP =================
+        document.addEventListener('DOMContentLoaded', function() {
+            initCurrency();
+            initUI();
+        });
 
-        // Balance animation
-        function animateBalance() {
-            const balanceEl = document.getElementById('totalBalance');
-            const target = totalEarnings;
-            let current = parseInt(balanceEl.textContent.replace('د.إ ', '').replace(',', ''));
-            const increment = target > current ? 5 : -5;
-            
-            const timer = setInterval(() => {
-                current += increment;
-                if ((increment > 0 && current >= target) || (increment < 0 && current <= target)) {
-                    current = target;
-                    clearInterval(timer);
-                }
-                balanceEl.textContent = `د.إ ${Math.abs(current).toLocaleString()}`;
-            }, 50);
-        }
-
-        // Initialize app
-        initUI();
-        setTimeout(animateBalance, 500);
-
-        // Auto-save every 30 seconds
+        // Auto-save
         setInterval(saveData, 30000);
     </script>
 </body>
